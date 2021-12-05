@@ -41,7 +41,7 @@ public class UpdateInvoiceCommandHandler : IRequestHandler<UpdateInvoiceCommand,
         entity.Id = request.Id;
         entity.Amount = request.Amount;
         entity.Warning = request.Amount > warningThreadshold;
-        entity.Validated = request.Validated;
+        entity.Validated = false;
         entity.Department = request.Department;
 
         _context.Invoices.Update(entity);

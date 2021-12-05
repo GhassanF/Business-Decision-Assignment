@@ -1,6 +1,4 @@
-﻿using Business_Decision.Domain.Entities;
-using Business_Decision.Domain.ValueObjects;
-using Business_Decision.Infrastructure.Identity;
+﻿using Business_Decision.Infrastructure.Identity;
 using Microsoft.AspNetCore.Identity;
 
 namespace Business_Decision.Infrastructure.Persistence;
@@ -22,32 +20,6 @@ public static class ApplicationDbContextSeed
         {
             await userManager.CreateAsync(administrator, "Administrator1!");
             await userManager.AddToRolesAsync(administrator, new[] { administratorRole.Name });
-        }
-    }
-
-    public static async Task SeedSampleDataAsync(ApplicationDbContext context)
-    {
-        // Seed, if necessary
-        if (!context.TodoLists.Any())
-        {
-            context.TodoLists.Add(new TodoList
-            {
-                Title = "Shopping",
-                Colour = Colour.Blue,
-                Items =
-                    {
-                        new TodoItem { Title = "Apples", Done = true },
-                        new TodoItem { Title = "Milk", Done = true },
-                        new TodoItem { Title = "Bread", Done = true },
-                        new TodoItem { Title = "Toilet paper" },
-                        new TodoItem { Title = "Pasta" },
-                        new TodoItem { Title = "Tissues" },
-                        new TodoItem { Title = "Tuna" },
-                        new TodoItem { Title = "Water" }
-                    }
-            });
-
-            await context.SaveChangesAsync();
         }
     }
 }

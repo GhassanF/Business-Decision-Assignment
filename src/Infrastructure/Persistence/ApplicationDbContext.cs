@@ -28,10 +28,6 @@ public class ApplicationDbContext : ApiAuthorizationDbContext<ApplicationUser>, 
         _dateTime = dateTime;
     }
 
-    public DbSet<TodoList> TodoLists => Set<TodoList>();
-
-    public DbSet<TodoItem> TodoItems => Set<TodoItem>();
-
     public DbSet<Invoice> Invoices => Set<Invoice>();
 
     public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = new CancellationToken())
