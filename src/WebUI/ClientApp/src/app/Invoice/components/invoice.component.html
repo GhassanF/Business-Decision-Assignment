@@ -1,0 +1,69 @@
+<h1 id="tableLabel">Invoices</h1>
+
+<p>Below is the list of fetched invoices</p>
+
+<p *ngIf="!dataSource"><em>Loading...</em></p>
+
+<alert type="warning" *ngIf="!NoinvalidInvoicesExist">
+  <strong>Warning!</strong> One or more invoices are invalid.
+</alert>
+<button class="btn btn-success validate-button" (click)="validateInvoices()">Validate Invoices</button>
+
+<table class="mat-elevation-z8" mat-table [dataSource]="dataSource">
+  <!-- Id -->
+  <mat-text-column name="id"></mat-text-column>
+
+  <!-- Invoice Number -->
+  <ng-container matColumnDef="invoiceNumber">
+    <th mat-header-cell *matHeaderCellDef> Invoice Number </th>
+    <td mat-cell *matCellDef="let invoice" >
+      <mat-form-field floatLabel="never">
+        <input enter-div modifiedInvoice="invoice" matInput [value]="invoice.invoiceNumber" [(ngModel)]="invoice.invoiceNumber" />
+      </mat-form-field>
+    </td>
+  </ng-container>
+
+  <!-- Amount -->
+  <ng-container matColumnDef="amount">
+    <th mat-header-cell *matHeaderCellDef> Amount </th>
+    <td mat-cell *matCellDef="let invoice" [ngClass]="{'highlight': invoice.amount >100}">
+      <mat-form-field floatLabel="never" [ngClass]="{'highlight': invoice.amount >100}">
+        <input enter-div [modifiedInvoice]="invoice" matInput [value]="invoice.amount"  [(ngModel)]="invoice.amount" />
+      </mat-form-field>
+    </td>
+  </ng-container>
+
+  <!-- Department -->
+  <ng-container matColumnDef="department">
+    <th mat-header-cell *matHeaderCellDef> Department </th>
+    <td mat-cell *matCellDef="let invoice">
+      <mat-form-field appearance="outline" >
+        <mat-select [value]="invoice.department" >
+          <mat-option class="mat-select-panel" *ngFor="let dep of departments" [value]="dep">{{dep}}</mat-option>
+        </mat-select>
+      </mat-form-field>
+    </td>
+  </ng-container>
+
+  <!-- Delete Button -->
+  <ng-container matColumnDef="deleteInvoice">
+    <th mat-header-cell *matHeaderCellDef> Delete </th>
+    <td mat-cell *matCellDef="let invoice;let rowIdex = index">
+      <button mat-fab color="alert" aria-label="Delete Invoice" (click)="deleteInvoice(rowIndex,invoice.id)">
+        <mat-icon>delete</mat-icon>
+      </button>
+    </td>
+  </ng-container>
+
+  <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+  <tr mat-row *matRowDef="let row; columns: displayedColumns;let rowIndex = index"></tr>
+</table>
+
+<!-- Paginator -->
+<mat-paginator [length]="totalRows"
+               [pageIndex]="pageNumber -1"
+               [pageSize]="pageSize"
+               [pageSizeOptions]="pageSizeOptions"
+               (page)="onPageChanged($event)"
+               aria-label="Select page">
+</mat-paginator>
