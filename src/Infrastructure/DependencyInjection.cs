@@ -1,5 +1,4 @@
 ﻿using Business_Decision.Application.Common.Interfaces;
-using Business_Decision.Infrastructure.Files;
 using Business_Decision.Infrastructure.Identity;
 using Business_Decision.Infrastructure.Persistence;
 using Business_Decision.Infrastructure.Services;
@@ -42,7 +41,6 @@ public static class DependencyInjection
 
         services.AddTransient<IDateTime, DateTimeService>();
         services.AddTransient<IIdentityService, IdentityService>();
-        services.AddTransient<ICsvFileBuilder, CsvFileBuilder>();
 
         services.AddAuthentication()
             .AddIdentityServerJwt();

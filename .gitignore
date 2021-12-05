@@ -237,5 +237,5 @@ _Pvt_Extensions
 /.mfractor
 
 # Angular
-/.angular/cache
+src/WebUI/ClientApp/.angular/cache
 *.pack

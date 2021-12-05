@@ -1,7 +1,7 @@
 ﻿using System.Runtime.Serialization;
 using AutoMapper;
 using Business_Decision.Application.Common.Mappings;
-using Business_Decision.Application.TodoLists.Queries.GetTodos;
+using Business_Decision.Application.Invoices.Queries.GetInvoicesWithPagination;
 using Business_Decision.Domain.Entities;
 using NUnit.Framework;
 
@@ -27,8 +27,7 @@ public class MappingTests
     }
 
     [Test]
-    [TestCase(typeof(TodoList), typeof(TodoListDto))]
-    [TestCase(typeof(TodoItem), typeof(TodoItemDto))]
+    [TestCase(typeof(Invoice), typeof(InvoiceDto))]
     public void ShouldSupportMappingFromSourceToDestination(Type source, Type destination)
     {
         var instance = GetInstanceOf(source);

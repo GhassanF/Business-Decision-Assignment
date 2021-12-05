@@ -25,7 +25,7 @@ public class ValidateInvoiceCommandHandler : IRequestHandler<ValidateInvoiceComm
        
         if(invalidInvoices > 0)
         {
-            return false;
+            return true;
         }
 
         var validInvoices = _context.Invoices.Where(x=>x.Validated != true).ToList();
@@ -35,6 +35,6 @@ public class ValidateInvoiceCommandHandler : IRequestHandler<ValidateInvoiceComm
         _context.Invoices.UpdateRange(validInvoices);
         await _context.SaveChangesAsync(cancellationToken);
 
-        return true;
+        return false;
     }
 }

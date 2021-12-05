@@ -1,6 +1,6 @@
 import { Component, OnInit, QueryList, ViewChild, ViewChildren } from "@angular/core";
 import { MatPaginator, PageEvent } from "@angular/material/paginator";
-import { MatTableDataSource } from "@angular/material/table";
+import { MatTable, MatTableDataSource } from "@angular/material/table";
 import { InvoicesClient, CreateInvoiceCommand, UpdateInvoiceCommand, InvoiceDto } from '../../web-api-client';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { EnterDivDirective } from "../directives/enter-div.directive";
@@ -17,6 +17,8 @@ export class InvoiceComponent implements OnInit {
 
   displayedColumns: string[] = ['id', 'invoiceNumber', 'amount', 'department', 'deleteInvoice'];
   dataSource: MatTableDataSource<InvoiceDto>
+
+  @ViewChild(MatTable) table: MatTable<InvoiceDto>;
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChildren(EnterDivDirective) inputs: QueryList<EnterDivDirective>
 
@@ -42,19 +44,18 @@ export class InvoiceComponent implements OnInit {
   }
 
   moveToNextRow(object: any) {
+
     const inputToArray = this.inputs.toArray()
     let index = inputToArray.findIndex(x => x.element === object.element)
 
     let currentInvoice = object.invoice;
+    this.saveInvoice(currentInvoice);
 
     index++;
 
-    if (index >= 0 && index < this.inputs.length) {
+    if (index > 0 && index < this.inputs.length) {
       inputToArray[index].element.nativeElement.focus();
     }
-
-    
-    this.saveInvoice(currentInvoice);
   }
 
   loadTodoItems(): void {
@@ -65,6 +66,10 @@ export class InvoiceComponent implements OnInit {
         this.paginator.length = result.totalCount;
         this.paginator.pageSize = this.pageSize;
         this.totalRows = result.totalCount;
+
+        if (result.items.length == 0) {
+          this.addEmptyRow();
+        }
       },
       error => console.error(error)
     );
@@ -74,8 +79,8 @@ export class InvoiceComponent implements OnInit {
     this.invoicesClient.delete(invoiceId)
       .subscribe(
         () => {
-          this.dataSource.data.slice(rowIndex, 1);
-          this.dataSource._updateChangeSubscription();
+          this.dataSource.data = this.dataSource.data.slice(rowIndex, 1);
+          this.table.renderRows();
         }
       );
   }
@@ -86,8 +91,7 @@ export class InvoiceComponent implements OnInit {
         .subscribe(
           result => {
             invoice.id = result.id;
-            this.dataSource.data.push(new InvoiceDto());
-            this.dataSource._updateChangeSubscription();
+            this.addEmptyRow();
           },
           error => console.error(error)
         );
@@ -103,13 +107,9 @@ export class InvoiceComponent implements OnInit {
   validateInvoices(): void {
     this.invoicesClient.gatValidationErrors()
       .subscribe(result => {
-        this.matSnackBar.open(
-          "One or more invoices are invalid.",
-          "Close",
-          {
-            verticalPosition: 'top',
-            horizontalPosition: 'center'
-          })
+        if (result) {
+          this.matSnackBar.open("One or more invoices are invalid.", "Close", { verticalPosition: 'top', horizontalPosition: 'center' });
+        }
       },
         error => console.error(error)
       );
@@ -120,5 +120,10 @@ export class InvoiceComponent implements OnInit {
     this.pageSize = event.pageSize;
     this.firstLoad = false;
     this.loadTodoItems();
+  }
+
+  addEmptyRow(): void {
+    this.dataSource.data.push(new InvoiceDto());
+    this.table.renderRows();
   }
 }
